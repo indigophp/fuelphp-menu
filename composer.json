@@ -1,0 +1,23 @@
+{
+    "name": "indigophp/fuelphp-menu",
+    "description": "FuelPHP wrapper around Knp Menu package",
+    "license": "MIT",
+    "keywords": ["menu", "fuelphp"],
+    "homepage": "https://indigophp.com",
+    "authors": [
+        {
+            "name": "Márk Sági-Kazár",
+            "email": "mark.sagikazar@gmail.com"
+        }
+    ],
+    "require": {
+        "knplabs/knp-menu": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Knp\\Menu\\": "src/"
+        }
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev"
+}

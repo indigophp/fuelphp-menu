@@ -68,6 +68,19 @@ class FuelServiceProvider extends ServiceProvider
 
 		$this->register('menu.renderer.fuel', function($dic)
 		{
+			$stack = $container->resolve('requeststack');
+
+			if ($request = $stack->top())
+			{
+				$app = $request->getComponent()->getApplication();
+			}
+			else
+			{
+				$app = $container->resolve('application::__main');
+			}
+
+			$viewManager = $app->getViewManager();
+
 			$matcher = $dic->resolve('menu.matcher');
 
 			return $dic->resolve('Knp\\Menu\\Renderer\\FuelRenderer', [$viewManager, 'knp_menu.html.twig', $matcher]);

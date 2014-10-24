@@ -86,20 +86,20 @@ class FuelServiceProvider extends ServiceProvider
 			return $dic->resolve('Knp\\Menu\\Renderer\\FuelRenderer', [$viewManager, 'knp_menu.html.twig', $matcher]);
 		});
 
-		$this->extend('parser.twig', function($dic, $instance)
-		{
-			$rendererProvider = $dic->resolve('menu.renderer_provider');
-			$menuProvider = $dic->resolve('menu.provider');
+		// $this->extend('parser.twig', function($dic, $instance)
+		// {
+		// 	$rendererProvider = $dic->resolve('menu.renderer_provider');
+		// 	$menuProvider = $dic->resolve('menu.provider');
 
-			$helper = $dic->resolve('Knp\\Menu\\Twig\\Helper', [$rendererProvider, $menuProvider]);
+		// 	$helper = $dic->resolve('Knp\\Menu\\Twig\\Helper', [$rendererProvider, $menuProvider]);
 
-			$extension = $dic->resolve('Knp\\Menu\\Twig\\MenuExtension', [$helper]);
+		// 	$extension = $dic->resolve('Knp\\Menu\\Twig\\MenuExtension', [$helper]);
 
-			$twig = $instance->getTwig();
+		// 	$twig = $instance->getTwig();
 
-			$twig->addExtension($extension);
+		// 	$twig->addExtension($extension);
 
-			return $instance;
-		});
+		// 	return $instance;
+		// });
 	}
 }

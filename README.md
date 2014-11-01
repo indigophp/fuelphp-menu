@@ -1,8 +1,8 @@
 # FuelPHP Menu
 
-[![Packagist Version](https://img.shields.io/packagist/v/indigophp/fuelphp-menu.svg?style=flat-square)](https://packagist.org/packages/indigophp/fuelphp-menu)
+[![Latest Version](https://img.shields.io/github/release/indigophp/fuelphp-menu.svg?style=flat-square)](https://github.com/indigophp/fuelphp-menu/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Total Downloads](https://img.shields.io/packagist/dt/indigophp/fuelphp-menu.svg?style=flat-square)](https://packagist.org/packages/indigophp/fuelphp-menu)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 **This package is a wrapper around [KnpLabs/KnpMenu](https://github.com/KnpLabs/KnpMenu) package.**
 
@@ -11,12 +11,8 @@
 
 Via Composer
 
-``` json
-{
-    "require": {
-        "indigophp/fuelphp-menu": "@stable"
-    }
-}
+``` bash
+$ composer require indigophp/fuelphp-menu
 ```
 
 
@@ -26,7 +22,7 @@ Via Composer
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/indigophp/fuelphp-menu/blob/develop/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 
 ## Credits
@@ -37,4 +33,4 @@ Please see [CONTRIBUTING](https://github.com/indigophp/fuelphp-menu/blob/develop
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/indigophp/fuelphp-menu/blob/develop/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](LICENSE) for more information.

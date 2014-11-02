@@ -75,11 +75,22 @@ class FuelProvider implements RendererProviderInterface
 	 */
 	public function getDefault()
 	{
-		if (is_null($this->default)) {
-			return reset($this->renderers);
+		if (is_null($this->default))
+		{
+			$this->default = reset($this->renderers);
 		}
 
 		return $this->default;
+	}
+
+	/**
+	 * Sets the default renderer
+	 *
+	 * @param string $default
+	 */
+	public function setDefault($default)
+	{
+		$this->default = $default;
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the FuelPHP Menu package.
+ * This file is part of the Fuel Menu package.
  *
  * (c) Indigo Development Team
  *
@@ -56,14 +56,26 @@ class FuelServiceProvider extends ServiceProvider
 			return $dic->resolve('Knp\\Menu\\Loader\\ArrayLoader', [$factory]);
 		});
 
-		$this->register('menu.provider', function($dic)
+		$this->register('menu.provider', function($dic, array $menus = [])
 		{
-			return $dic->resolve('Knp\\Menu\\Provider\\FuelProvider', [$this->container]);
+			$config = $this->getApp()->getConfig();
+			$config->load('menu', true);
+			$menus = array_merge($config->get('menu.menus', []), $menus);
+
+			return $dic->resolve('Knp\\Menu\\Provider\\FuelProvider', [$this->container, $menus]);
 		});
 
 		$this->register('menu.renderer_provider', function($dic, array $renderers = [], $default = null)
 		{
-			$renderers = array_merge(['fuel' => 'menu.renderer.fuel', 'list' => 'menu.renderer.list'], $renderers);
+			$config = $this->getApp()->getConfig();
+			$config->load('menu', true);
+			$renderers = array_merge(
+				['fuel' => 'menu.renderer.fuel', 'list' => 'menu.renderer.list'],
+				$config->get('menu.renderers', []),
+				$renderers
+			);
+
+			$default = $default ?: $config->get('menu.default_renderer');
 
 			return $dic->resolve('Knp\\Menu\\Renderer\\FuelProvider', [$this->container, $renderers, $default]);
 		});
@@ -75,24 +87,34 @@ class FuelServiceProvider extends ServiceProvider
 			return $dic->resolve('Knp\\Menu\\Renderer\\ListRenderer', [$matcher]);
 		});
 
-		$this->register('menu.renderer.fuel', function($dic)
+		$this->register('menu.renderer.fuel', function($dic, array $defaultOptions = [])
 		{
-			$stack = $container->resolve('requeststack');
-
-			if ($request = $stack->top())
-			{
-				$app = $request->getComponent()->getApplication();
-			}
-			else
-			{
-				$app = $container->resolve('application::__main');
-			}
-
-			$viewManager = $app->getViewManager();
-
 			$matcher = $dic->resolve('menu.matcher');
 
-			return $dic->resolve('Knp\\Menu\\Renderer\\FuelRenderer', [$viewManager, 'knp_menu.html.twig', $matcher]);
+			return $dic->resolve('Knp\\Menu\\Renderer\\FuelRenderer', [$matcher, $defaultOptions]);
 		});
+
+		$this->extend('menu.renderer.fuel', 'getViewManagerInstance');
+	}
+
+	/**
+	 * Returns the application
+	 *
+	 * @return \Fuel\Foundation\Application
+	 */
+	private function getApp()
+	{
+		$stack = $container->resolve('requeststack');
+
+		if ($request = $stack->top())
+		{
+			$app = $request->getComponent()->getApplication();
+		}
+		else
+		{
+			$app = $container->resolve('application::__main');
+		}
+
+		return $app;
 	}
 }

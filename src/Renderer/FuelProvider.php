@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the FuelPHP Menu package.
+ * This file is part of the Fuel Menu package.
  *
  * (c) Indigo Development Team
  *
@@ -64,8 +64,6 @@ class FuelProvider implements RendererProviderInterface
 		}
 
 		$this->renderers[$name] = $renderer;
-
-		return $this;
 	}
 
 	/**
@@ -104,7 +102,8 @@ class FuelProvider implements RendererProviderInterface
 			$name = $this->getDefault();
 		}
 
-		if ($this->has($name)) {
+		if (isset($this->renderers[$name]))
+		{
 			$name = $this->renderers[$name];
 		}
 
@@ -116,6 +115,6 @@ class FuelProvider implements RendererProviderInterface
 	 */
 	public function has($name)
 	{
-		return isset($this->renderers[$name]);
+		return isset($this->renderers[$name]) or isset($this->container[$name]);
 	}
 }

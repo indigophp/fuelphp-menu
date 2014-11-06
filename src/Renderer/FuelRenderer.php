@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the FuelPHP Menu package.
+ * This file is part of the Fuel Menu package.
  *
  * (c) Indigo Development Team
  *
@@ -15,6 +15,11 @@ use Fuel\Display\ViewManager;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Matcher\MatcherInterface;
 
+/**
+ * Render menu using ViewManager
+ *
+ * @author Márk Sági-Kazár <mark.sagikazar@gmail.com>
+ */
 class FuelRenderer implements RendererInterface
 {
 	/**
@@ -47,20 +52,35 @@ class FuelRenderer implements RendererInterface
 	];
 
 	/**
-	 * @param ViewManager      $viewManager
 	 * @param string           $template
 	 * @param MatcherInterface $matcher
 	 * @param array            $defaultOptions
 	 */
 	public function __construct(
-		ViewManager $viewManager,
-		$template,
 		MatcherInterface $matcher,
 		array $defaultOptions = []
 	) {
-		$this->viewManager = $viewManager;
 		$this->matcher = $matcher;
 		$this->defaultOptions = array_merge($this->defaultOptions, $defaultOptions);
+	}
+
+	/**
+	 * Sets a ViewManager
+	 *
+	 * @param ViewManager $viewManager
+	 */
+	public function setViewManager(ViewManager $viewManager)
+	{
+		$this->viewManager = $viewManager;
+	}
+
+	/**
+	 * Sets the default template
+	 *
+	 * @param string $template
+	 */
+	public function setDefaultTemplate($template)
+	{
 		$this->defaultOptions['template'] = $template;
 	}
 

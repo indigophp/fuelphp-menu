@@ -104,7 +104,7 @@ class FuelServiceProvider extends ServiceProvider
 	 */
 	private function getApp()
 	{
-		$stack = $container->resolve('requeststack');
+		$stack = $this->container->resolve('requeststack');
 
 		if ($request = $stack->top())
 		{
@@ -112,7 +112,7 @@ class FuelServiceProvider extends ServiceProvider
 		}
 		else
 		{
-			$app = $container->resolve('application::__main');
+			$app = $this->container->resolve('application::__main');
 		}
 
 		return $app;

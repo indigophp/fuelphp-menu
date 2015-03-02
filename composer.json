@@ -11,13 +11,18 @@
 		}
 	],
 	"require": {
-		"knplabs/knp-menu": "~2.0.0"
+		"knplabs/knp-menu": "~2.0"
 	},
 	"autoload": {
 		"psr-4": {
 			"Knp\\Menu\\": "src/"
 		}
 	},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    },
 	"prefer-stable": true,
 	"minimum-stability": "dev"
 }

@@ -11,7 +11,8 @@
 
 namespace Knp\Menu\Renderer;
 
-use Fuel\Display\ViewManager;
+use Fuel\Display\ViewManagerAware;
+use Fuel\Display\ViewManagerAcceptor;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Matcher\MatcherInterface;
 
@@ -20,12 +21,9 @@ use Knp\Menu\Matcher\MatcherInterface;
  *
  * @author Márk Sági-Kazár <mark.sagikazar@gmail.com>
  */
-class FuelRenderer implements RendererInterface
+class FuelRenderer implements ViewManagerAware
 {
-	/**
-	 * @var ViewManager
-	 */
-	private $viewManager;
+	use ViewManagerAcceptor;
 
 	/**
 	 * @var MatcherInterface
@@ -52,7 +50,6 @@ class FuelRenderer implements RendererInterface
 	];
 
 	/**
-	 * @param string           $template
 	 * @param MatcherInterface $matcher
 	 * @param array            $defaultOptions
 	 */
@@ -62,16 +59,6 @@ class FuelRenderer implements RendererInterface
 	) {
 		$this->matcher = $matcher;
 		$this->defaultOptions = array_merge($this->defaultOptions, $defaultOptions);
-	}
-
-	/**
-	 * Sets a ViewManager
-	 *
-	 * @param ViewManager $viewManager
-	 */
-	public function setViewManager(ViewManager $viewManager)
-	{
-		$this->viewManager = $viewManager;
 	}
 
 	/**

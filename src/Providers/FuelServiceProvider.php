@@ -11,7 +11,8 @@
 
 namespace Knp\Menu\Providers;
 
-use Fuel\Dependency\ServiceProvider;
+use League\Container\ServiceProvider;
+use Knp\Menu;
 
 /**
  * Provides menu services
@@ -21,9 +22,9 @@ use Fuel\Dependency\ServiceProvider;
 class FuelServiceProvider extends ServiceProvider
 {
 	/**
-	 * {@inheritdoc}
+	 * @var array
 	 */
-	public $provides = [
+	protected $provides = [
 		'menu',
 		'menu.factory',
 		'menu.matcher',
@@ -31,44 +32,44 @@ class FuelServiceProvider extends ServiceProvider
 		'menu.provider',
 		'menu.renderer_provider',
 		'menu.renderer.list',
-		'menu.renderer.fuel'
+		'menu.renderer.fuel',
+		'menu.twig.helper',
+		'menu.twig.extension',
 	];
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function provide()
+	public function register()
 	{
-		$this->register('menu', function($dic, $title = null, array $options = [])
+		$this->container->add('menu', function($title = null, array $options = [])
 		{
-			$factory = $dic->resolve('menu.factory');
+			$factory = $this->container->get('menu.factory');
 
 			return $factory->createItem($title, $options);
 		});
 
-		$this->registerSingleton('menu.factory', 'Knp\\Menu\\MenuFactory');
-		$this->register('menu.matcher', 'Knp\\Menu\\Matcher\\Matcher');
+		$this->container->singleton('menu.factory', 'Knp\\Menu\\MenuFactory');
+		$this->container->add('menu.matcher', 'Knp\\Menu\\Matcher\\Matcher');
 
-		$this->register('menu.loader.array', function($dic)
+		$this->container->add('menu.loader.array', 'Knp\\Menu\\Loader\\ArrayLoader')
+			->withArgument('menu.factory');
+
+		$this->container->add('menu.provider', function(array $menus = [])
 		{
-			$factory = $dic->resolve('menu.factory');
-
-			return $dic->resolve('Knp\\Menu\\Loader\\ArrayLoader', [$factory]);
-		});
-
-		$this->register('menu.provider', function($dic, array $menus = [])
-		{
-			$config = $this->getApp()->getConfig();
+			$config = $this->container->get('configInstance', [false]);
 			$config->load('menu', true);
+
 			$menus = array_merge($config->get('menu.menus', []), $menus);
 
-			return $dic->resolve('Knp\\Menu\\Provider\\FuelProvider', [$this->container, $menus]);
+			return new Menu\Provider\FuelProvider($this->container, $menus);
 		});
 
-		$this->register('menu.renderer_provider', function($dic, array $renderers = [], $default = null)
+		$this->container->add('menu.renderer_provider', function(array $renderers = [], $default = null)
 		{
-			$config = $this->getApp()->getConfig();
+			$config = $this->container->get('configInstance', [false]);
 			$config->load('menu', true);
+
 			$renderers = array_merge(
 				['fuel' => 'menu.renderer.fuel', 'list' => 'menu.renderer.list'],
 				$config->get('menu.renderers', []),
@@ -77,44 +78,24 @@ class FuelServiceProvider extends ServiceProvider
 
 			$default = $default ?: $config->get('menu.default_renderer');
 
-			return $dic->resolve('Knp\\Menu\\Renderer\\FuelProvider', [$this->container, $renderers, $default]);
+			return new Menu\Renderer\FuelProvider($this->container, $renderers, $default);
 		});
 
-		$this->register('menu.renderer.list', function($dic)
-		{
-			$matcher = $dic->resolve('menu.matcher');
+		$this->container->add('menu.renderer.list', 'Knp\\Menu\\Renderer\\ListRenderer')
+			->withArgument('menu.matcher');
 
-			return $dic->resolve('Knp\\Menu\\Renderer\\ListRenderer', [$matcher]);
+		$this->container->add('menu.renderer.fuel', function(array $defaultOptions = [])
+		{
+			$matcher = $this->container->get('menu.matcher');
+
+			return new Menu\Renderer\FuelRenderer($matcher, $defaultOptions);
 		});
 
-		$this->register('menu.renderer.fuel', function($dic, array $defaultOptions = [])
-		{
-			$matcher = $dic->resolve('menu.matcher');
+		$this->container->add('menu.twig.helper', 'Knp\\Menu\\Twig\\Helper')
+			->withArgument('menu.renderer_provider')
+			->withArgument('menu.provider');
 
-			return $dic->resolve('Knp\\Menu\\Renderer\\FuelRenderer', [$matcher, $defaultOptions]);
-		});
-
-		$this->extend('menu.renderer.fuel', 'getViewManagerInstance');
-	}
-
-	/**
-	 * Returns the application
-	 *
-	 * @return \Fuel\Foundation\Application
-	 */
-	private function getApp()
-	{
-		$stack = $this->container->resolve('requeststack');
-
-		if ($request = $stack->top())
-		{
-			$app = $request->getComponent()->getApplication();
-		}
-		else
-		{
-			$app = $this->container->resolve('application::__main');
-		}
-
-		return $app;
+		$this->container->add('menu.twig.extension', 'Knp\\Menu\\Twig\\MenuExtension')
+			->withArgument('menu.twig.helper');
 	}
 }

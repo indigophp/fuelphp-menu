@@ -26,8 +26,6 @@ class FuelProvider implements MenuProviderInterface
 	private $container;
 
 	/**
-	 * Menus
-	 *
 	 * @var array
 	 */
 	private $menus = [];
@@ -62,7 +60,7 @@ class FuelProvider implements MenuProviderInterface
 			$name = $this->menus[$name];
 		}
 
-		return $this->container->resolve($name);
+		return $this->container->multiton('menu', $name);
 	}
 
 	/**
@@ -70,6 +68,6 @@ class FuelProvider implements MenuProviderInterface
 	 */
 	public function has($name, array $options = [])
 	{
-		return isset($this->menus[$name]) or isset($this->container[$name]);
+		return isset($this->menus[$name]) or $this->container->isInstance('menu', $name);
 	}
 }
